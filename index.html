@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comparative Adjectives Quiz</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg,#eef7ff,#fff8e8);
+    color: #243447;
+    line-height: 1.5;
+  }
+  .container {
+    max-width: 850px;
+    margin: auto;
+    padding: 18px;
+  }
+  h1 {
+    text-align: center;
+    color: #1769aa;
+    margin: 8px 0 6px;
+  }
+  .subtitle {
+    text-align:center;
+    color:#667085;
+    margin-bottom:20px;
+  }
+  .section {
+    background:#1769aa;
+    color:white;
+    padding:12px 16px;
+    border-radius:14px;
+    margin:22px 0 14px;
+    font-weight:bold;
+  }
+  .question {
+    background:white;
+    border-radius:16px;
+    padding:18px;
+    margin:14px 0;
+    box-shadow:0 4px 14px rgba(0,0,0,.08);
+    border:2px solid transparent;
+  }
+  .question.correct { border-color:#27ae60; }
+  .question.incorrect { border-color:#e74c3c; }
+  .qtext {
+    font-size:18px;
+    font-weight:bold;
+    margin-bottom:12px;
+  }
+  .options {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  .option {
+    border:2px solid #d9e2ec;
+    background:#f8fbff;
+    padding:12px;
+    border-radius:12px;
+    cursor:pointer;
+    font-size:16px;
+    transition:.2s;
+    user-select:none;
+  }
+  .option:hover { border-color:#3498db; background:#eef7ff; }
+  .option.selected {
+    border-color:#1769aa;
+    background:#dff0ff;
+    font-weight:bold;
+  }
+  .option.disabled { cursor:default; }
+  .feedback {
+    display:none;
+    margin-top:14px;
+    padding:12px 14px;
+    border-radius:10px;
+    font-size:15px;
+  }
+  .feedback.correct { display:block; background:#eaf8ef; color:#176b36; }
+  .feedback.incorrect { display:block; background:#fff0ee; color:#a93226; }
+  .actions {
+    text-align:center;
+    margin:26px 0;
+  }
+  button {
+    border:0;
+    border-radius:13px;
+    padding:13px 24px;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+    margin:5px;
+  }
+  #submitBtn { background:#1769aa; color:white; }
+  #resetBtn { background:#eef2f6; color:#344054; }
+  #result {
+    display:none;
+    background:white;
+    border-radius:18px;
+    padding:20px;
+    text-align:center;
+    box-shadow:0 5px 18px rgba(0,0,0,.1);
+    margin:20px 0;
+  }
+  .score {
+    font-size:30px;
+    font-weight:bold;
+    color:#1769aa;
+  }
+  .explanation {
+    margin-top:6px;
+  }
+  @media (max-width:600px) {
+    .container { padding:10px; }
+    .options { grid-template-columns:1fr; }
+    .qtext { font-size:17px; }
+    .option { padding:13px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Comparative Adjectives Quiz</h1>
+  <div class="subtitle">Choose the best answer for each question.</div>
+
+  <div class="section">Part 1 – Choose the correct answer</div>
+
+  <div id="quiz"></div>
+
+  <div class="section">Part 2 – Complete the letter</div>
+  <div id="quiz2"></div>
+
+  <div class="actions">
+    <button id="submitBtn" onclick="submitQuiz()">Submit Answers</button>
+    <button id="resetBtn" onclick="resetQuiz()">Try Again</button>
+  </div>
+
+  <div id="result"></div>
+</div>
+
+<script>
+const questions = [
+  {
+    id:1,
+    text:"My neighbourhood is __________ than your neighbourhood. (noisy)",
+    options:["A. noisy","B. noisier","C. more noisy","D. noisiest"],
+    answer:1,
+    explanation:"Với tính từ ngắn “noisy”, ta đổi y → i rồi thêm -er: noisy → noisier. Câu có “than” nên cần dạng so sánh hơn."
+  },
+  {
+    id:2,
+    text:"The square in Ha Noi is __________ than the square in Hoi An. (big)",
+    options:["A. bigger","B. biggest","C. more big","D. as big"],
+    answer:0,
+    explanation:"“Big” là tính từ ngắn. Khi thêm -er, ta gấp đôi phụ âm cuối: big → bigger. Có “than” nên dùng so sánh hơn."
+  },
+  {
+    id:3,
+    text:"Living in the countryside is __________ than living in a city. (peaceful)",
+    options:["A. peaceful","B. more peaceful","C. most peaceful","D. peacefuler"],
+    answer:1,
+    explanation:"“Peaceful” là tính từ dài, nên dùng more + adjective: more peaceful. Có “than” nên cần so sánh hơn."
+  },
+  {
+    id:4,
+    text:"Is living in a city __________ than living in the countryside? (exciting)",
+    options:["A. exciting","B. most exciting","C. more exciting","D. as exciting"],
+    answer:2,
+    explanation:"“Exciting” là tính từ dài, nên dạng so sánh hơn là more exciting."
+  },
+  {
+    id:5,
+    text:"The weather is (1. hot) __________ than that in Ha Noi.",
+    options:["A. hoter","B. hot","C. hotter","D. more hot"],
+    answer:2,
+    explanation:"“Hot” là tính từ ngắn có dạng phụ âm – nguyên âm – phụ âm, nên gấp đôi phụ âm cuối rồi thêm -er: hot → hotter."
+  },
+  {
+    id:6,
+    text:"The houses and buildings are (2. small) __________ and (3. old) __________ than those in Ha Noi.",
+    options:["A. smaller / older","B. small / old","C. more small / more old","D. smallest / oldest"],
+    answer:0,
+    explanation:"“Small” → smaller và “old” → older. Cả hai đều là tính từ ngắn và câu có “than”, nên dùng dạng so sánh hơn."
+  },
+  {
+    id:7,
+    text:"The streets are (4. wide) __________ with less traffic.",
+    options:["A. wider","B. wide","C. widest","D. more wide"],
+    answer:0,
+    explanation:"“Wide” là tính từ ngắn kết thúc bằng -e, nên chỉ cần thêm -r: wide → wider."
+  },
+  {
+    id:8,
+    text:"The seafood here is (5. delicious) __________ and (6. cheap) __________ than the seafood in Ha Noi.",
+    options:["A. deliciouser / cheaper","B. more delicious / cheap","C. most delicious / cheapest","D. more delicious / cheaper"],
+    answer:3,
+    explanation:"“Delicious” là tính từ dài → more delicious. “Cheap” là tính từ ngắn → cheaper. Cả hai đều đứng trong cấu trúc so sánh hơn với “than”."
+  }
+];
+
+const q1 = document.getElementById("quiz");
+const q2 = document.getElementById("quiz2");
+
+function renderQuestion(q, target) {
+  const div = document.createElement("div");
+  div.className = "question";
+  div.id = "question-" + q.id;
+  div.innerHTML = `
+    <div class="qtext">Question ${q.id}: ${q.text}</div>
+    <div class="options">
+      ${q.options.map((opt,i)=>`
+        <div class="option" data-q="${q.id}" data-index="${i}" onclick="selectOption(${q.id},${i})">${opt}</div>
+      `).join("")}
+    </div>
+    <div class="feedback" id="feedback-${q.id}"></div>
+  `;
+  target.appendChild(div);
+}
+questions.slice(0,4).forEach(q=>renderQuestion(q,q1));
+questions.slice(4).forEach(q=>renderQuestion(q,q2));
+
+const selected = {};
+
+function selectOption(qid,index) {
+  if (document.body.dataset.submitted === "true") return;
+  selected[qid] = index;
+  document.querySelectorAll(`.option[data-q="${qid}"]`).forEach(el=>el.classList.remove("selected"));
+  document.querySelector(`.option[data-q="${qid}"][data-index="${index}"]`).classList.add("selected");
+}
+
+function submitQuiz() {
+  let score = 0;
+  let answered = 0;
+
+  questions.forEach(q => {
+    const box = document.getElementById("question-" + q.id);
+    const feedback = document.getElementById("feedback-" + q.id);
+    const chosen = selected[q.id];
+
+    box.classList.remove("correct","incorrect");
+    feedback.className = "feedback";
+
+    if (chosen !== undefined) {
+      answered++;
+      if (chosen === q.answer) {
+        score++;
+        box.classList.add("correct");
+        feedback.classList.add("correct");
+        feedback.innerHTML = `<strong>Correct!</strong> ${q.options[q.answer]} is the correct answer.`;
+      } else {
+        box.classList.add("incorrect");
+        feedback.classList.add("incorrect");
+        feedback.innerHTML = `<strong>Incorrect.</strong> Correct answer: <strong>${q.options[q.answer]}</strong>.<div class="explanation"><strong>Explanation:</strong> ${q.explanation}</div>`;
+      }
+    } else {
+      box.classList.add("incorrect");
+      feedback.classList.add("incorrect");
+      feedback.innerHTML = `<strong>Not answered.</strong> Correct answer: <strong>${q.options[q.answer]}</strong>.<div class="explanation"><strong>Explanation:</strong> ${q.explanation}</div>`;
+    }
+  });
+
+  document.body.dataset.submitted = "true";
+  document.querySelectorAll(".option").forEach(el=>el.classList.add("disabled"));
+
+  const result = document.getElementById("result");
+  result.style.display = "block";
+  result.innerHTML = `
+    <div>Your Score</div>
+    <div class="score">${score} / ${questions.length}</div>
+    <div>You answered ${answered} of ${questions.length} questions.</div>
+    <div style="margin-top:8px;">${score===8 ? "Excellent! 🎉" : score>=6 ? "Great job! 👍" : score>=4 ? "Good effort! Keep practising. 💪" : "Keep practising comparative adjectives. 📚"}</div>
+  `;
+  result.scrollIntoView({behavior:"smooth",block:"center"});
+}
+
+function resetQuiz() {
+  Object.keys(selected).forEach(k=>delete selected[k]);
+  document.body.dataset.submitted = "false";
+  document.querySelectorAll(".option").forEach(el=>{
+    el.classList.remove("selected","disabled");
+  });
+  document.querySelectorAll(".question").forEach(el=>el.classList.remove("correct","incorrect"));
+  document.querySelectorAll(".feedback").forEach(el=>{
+    el.className = "feedback";
+    el.innerHTML = "";
+  });
+  const result = document.getElementById("result");
+  result.style.display = "none";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+</script>
+</body>
+</html>
